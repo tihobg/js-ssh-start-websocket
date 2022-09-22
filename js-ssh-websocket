@@ -1,0 +1,47 @@
+<head>
+<meta charset="utf-8" />
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+  var mainSocket = new WebSocket("ws://192.168.100.34:8080");
+  
+  var ros = new ROSLIB.Ros({
+    url : 'ws://192.168.100.34:8080'
+  });
+  ros.on('connection', function() {
+    document.getElementById("status").innerHTML = "Connected YES";
+  });
+
+  mainSocket.onopen = function (event) {
+
+    mainSocket.send(JSON.stringify({action: 'connect', host:"ubiquityrobot", port:22, username:'ubuntu', password:'ubuntu'}));
+    document.getElementById("conn").innerHTML = "Socket open success1";
+  };
+
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+    document.getElementById("error").innerHTML = "Error";
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+    document.getElementById("closed").innerHTML = "Closed";
+  });
+</script>
+</head>
+
+<body>
+  <h1> Simple ROS User Interface </h1>
+  <p> Connection status: <span id="status"></span></p>
+  <p id="conn" ></p>
+  <p id="error"></p>
+  <p id="closed"></p>
+
+  </p>
+</body>
+</html>
